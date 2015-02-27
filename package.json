@@ -1,0 +1,29 @@
+{
+  "name": "rtc-switch",
+  "version": "1.0.0",
+  "description": "The core processing logic of rtc-switchboard without assuming any network transport",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/all.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rtc-io/rtc-switch.git"
+  },
+  "keywords": [
+    "webrtc"
+  ],
+  "author": "Damon Oehlman <damon.oehlman@nicta.com.au>",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/rtc-io/rtc-switch/issues"
+  },
+  "homepage": "https://github.com/rtc-io/rtc-switch",
+  "devDependencies": {
+    "tape": "^3.5.0"
+  },
+  "dependencies": {
+    "cog": "^1.0.0",
+    "cuid": "^1.2.4"
+  }
+}
