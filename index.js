@@ -13,7 +13,7 @@ module.exports = function(opts) {
   var board = new EventEmitter();
 
   function connect() {
-    var peer = {};
+    var peer = new EventEmitter();
 
     function process(data) {
       var command;
@@ -29,17 +29,21 @@ module.exports = function(opts) {
 
         // if we have a to command, and no designated target
         if (command === 'to') {
-          target = mgr.peers.get(parts[0]);
+          target = peer.room.filter(function(member) {
+            return member.id === parts[0];
+          })[0];
 
           // if the target is unknown, refuse to send
           if (! target) {
             console.warn('got a to request for id "' + parts[0] + '" but cannot find target');
             return false;
           }
+
+          target.emit('data', data);
         }
 
         if (! target) {
-          board.emit.apply(board, [command].concat(parts));
+          board.emit.apply(board, [command, peer].concat(parts));
         }
       }
     }
@@ -57,6 +61,37 @@ module.exports = function(opts) {
   function destroy() {
     rooms = {};
   }
+
+  function emit(name, src) {
+    var args = [].slice.call(arguments);
+
+    return function(emitter) {
+      // never send messages to ourself
+      if (emitter === src) {
+        return;
+      }
+
+      return emitter.emit.apply(emitter, args);
+    };
+  }
+
+  function getOrCreateRoom(name) {
+    return rooms[name] || (rooms[name] = []);
+  }
+
+  // handle announce messages
+  board.on('announce', function(peer, data) {
+    var room = peer.room = data && data.room && getOrCreateRoom(data.room);
+
+    // tag the peer id
+    peer.id = data.id;
+
+    // send through the announce
+    room.forEach(emit('announce', peer, data));
+
+    // add the peer to the room
+    room.push(peer);
+  });
 
   board.connect = connect;
   board.destroy = destroy;
