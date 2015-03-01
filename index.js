@@ -7,6 +7,10 @@ var EventEmitter = require('events').EventEmitter;
   This is a processor layer for the rtc-switchboard that is capable of
   talking with an rtc-signaller up to and including version 5.
 
+  ## Example Usage
+
+  <<< examples/ws-server.js
+
 **/
 module.exports = function(opts) {
   var rooms = {};
