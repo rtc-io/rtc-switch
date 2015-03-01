@@ -24,10 +24,49 @@ test('0:announce', function(t) {
   var testId = cuid();
 
   t.plan(2);
-  board.once('announce', function(data) {
+  board.once('announce', function(peer, data) {
     t.ok(data);
     t.equal(data.id, testId);
   });
 
   members[0].process(announce({ id: testId, room: 'a' }));
+});
+
+test('1:announce', function(t) {
+  var testId = cuid();
+
+  members[0].once('announce', function(peer, data) {
+    t.ok(data);
+    t.equal(data.id, testId);
+  });
+
+  t.plan(4);
+  board.once('announce', function(peer, data) {
+    t.ok(data);
+    t.equal(data.id, testId);
+  });
+
+  members[1].process(announce({ id: testId, room: 'a' }));
+});
+
+test('0:can send message to 1', function(t) {
+  var message = '/to|' + members[1].id + '|/hello|foo';
+
+  t.plan(1);
+  members[1].once('data', function(data) {
+    t.equal(message, data, 'ok');
+  });
+
+  members[0].process(message);
+});
+
+test('1:can send a message to 0', function(t) {
+  var message = '/to|' + members[0].id + '|/ehlo|bar';
+
+  t.plan(1);
+  members[0].once('data', function(data) {
+    t.equal(message, data, 'ok');
+  });
+
+  members[1].process(message);
 });
