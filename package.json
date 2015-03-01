@@ -20,10 +20,10 @@
   },
   "homepage": "https://github.com/rtc-io/rtc-switch",
   "devDependencies": {
+    "cuid": "^1.2.4",
     "tape": "^3.5.0"
   },
   "dependencies": {
-    "cog": "^1.0.0",
-    "cuid": "^1.2.4"
+    "cog": "^1.0.0"
   }
 }
