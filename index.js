@@ -20,6 +20,7 @@ module.exports = function(opts) {
       var parts;
       var target;
 
+      console.log('IN  ==> ' + data);
       if (data.charAt(0) === '/') {
         // initialise the command name
         command = data.slice(1, data.indexOf('|', 1)).toLowerCase();
@@ -43,7 +44,15 @@ module.exports = function(opts) {
         }
 
         if (! target) {
-          board.emit.apply(board, [command, peer].concat(parts));
+          board.emit.apply(board, [command, data, peer].concat(parts));
+
+          if (peer.room) {
+            peer.room.filter(function(member) {
+              return member !== peer;
+            }).forEach(function(member) {
+              member.emit('data', data);
+            });
+          }
         }
       }
     }
@@ -80,17 +89,33 @@ module.exports = function(opts) {
   }
 
   // handle announce messages
-  board.on('announce', function(peer, data) {
+  board.on('announce', function(payload, peer, sender, data) {
     var room = peer.room = data && data.room && getOrCreateRoom(data.room);
 
     // tag the peer id
     peer.id = data.id;
 
     // send through the announce
-    room.forEach(emit('announce', peer, data));
+    if (room) {
+      room.forEach(emit('data', payload));
 
-    // add the peer to the room
-    room.push(peer);
+      // add the peer to the room
+      room.push(peer);
+
+      // send the number of members back to the peer
+      peer.emit('data', '/roominfo|{"memberCount":' + room.length + '}');
+    }
+  });
+
+  board.on('leave', function(peer, sender, data) {
+    if (peer.room) {
+      // remove the peer from the room
+      peer.room = peer.room.filter(function(member) {
+        return member !== peer;
+      });
+
+      peer.room = undefined;
+    }
   });
 
   board.connect = connect;

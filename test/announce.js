@@ -24,7 +24,7 @@ test('0:announce', function(t) {
   var testId = cuid();
 
   t.plan(2);
-  board.once('announce', function(peer, data) {
+  board.once('announce', function(peer, sender, data) {
     t.ok(data);
     t.equal(data.id, testId);
   });
@@ -35,12 +35,7 @@ test('0:announce', function(t) {
 test('1:announce', function(t) {
   var testId = cuid();
 
-  members[0].once('announce', function(peer, data) {
-    t.ok(data);
-    t.equal(data.id, testId);
-  });
-
-  t.plan(4);
+  t.plan(2);
   board.once('announce', function(peer, data) {
     t.ok(data);
     t.equal(data.id, testId);
