@@ -6,7 +6,7 @@ talking with an rtc-signaller up to and including version 5.
 
 [![NPM](https://nodei.co/npm/rtc-switch.png)](https://nodei.co/npm/rtc-switch/)
 
-
+[![unstable](https://img.shields.io/badge/stability-unstable-yellowgreen.svg)](https://github.com/dominictarr/stability#unstable) [![Build Status](https://img.shields.io/travis/rtc-io/rtc-switch.svg?branch=master)](https://travis-ci.org/rtc-io/rtc-switch) 
 
 ## Example Usage
 
@@ -37,7 +37,7 @@ Using [socket.io](https://github.com/Automattic/socket.io)
 
 ### Apache 2.0
 
-Copyright 2015 Damon Oehlman <damon.oehlman@nicta.com.au>
+Copyright 2015 National ICT Australia Limited (NICTA)
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
