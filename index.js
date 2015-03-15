@@ -13,7 +13,9 @@ var EventEmitter = require('events').EventEmitter;
 
   <<< examples/ws-server.js
 
-  Using [socket.io](https://github.com/Automattic/socket.io)
+  Using [socket.io](https://github.com/Automattic/socket.io):
+
+  <<< examples/socket-io.js
 
 **/
 module.exports = function(opts) {

@@ -31,7 +31,28 @@ wss.on('connection', function connection(ws) {
 
 ```
 
-Using [socket.io](https://github.com/Automattic/socket.io)
+Using [socket.io](https://github.com/Automattic/socket.io):
+
+```js
+var http = require('http');
+var server = http.createServer();
+var io = require('socket.io')(server);
+var board = require('rtc-switch')();
+
+io.on('connection', function(socket){
+  var peer = board.connect();
+
+  socket.on('message', peer.process);
+  peer.on('data', function(data) {
+    socket.send(data);
+  });
+});
+
+server.listen(3000, function(){
+  console.log('listening on *:3000');
+});
+
+```
 
 ## License(s)
 
