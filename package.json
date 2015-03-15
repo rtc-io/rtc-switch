@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "The core processing logic of rtc-switchboard without assuming any network transport",
   "main": "index.js",
+  "stability": "unstable",
   "scripts": {
     "test": "node test/all.js",
     "gendocs": "gendocs > README.md"
