@@ -10,6 +10,8 @@ talking with an rtc-signaller up to and including version 5.
 
 ## Example Usage
 
+Plain old websockets:
+
 ```js
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({ port: 8080 });
@@ -28,6 +30,8 @@ wss.on('connection', function connection(ws) {
 });
 
 ```
+
+Using [socket.io](https://github.com/Automattic/socket.io)
 
 ## License(s)
 

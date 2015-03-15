@@ -9,7 +9,11 @@ var EventEmitter = require('events').EventEmitter;
 
   ## Example Usage
 
+  Plain old websockets:
+
   <<< examples/ws-server.js
+
+  Using [socket.io](https://github.com/Automattic/socket.io)
 
 **/
 module.exports = function(opts) {
