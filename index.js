@@ -24,7 +24,6 @@ module.exports = function(opts) {
       var parts;
       var target;
 
-      console.log('IN  ==> ' + data);
       if (data.charAt(0) === '/') {
         // initialise the command name
         command = data.slice(1, data.indexOf('|', 1)).toLowerCase();
@@ -44,7 +43,7 @@ module.exports = function(opts) {
             return false;
           }
 
-          target.emit('data', data);
+          return target.emit('data', data);
         }
 
         if (! target) {
