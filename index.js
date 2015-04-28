@@ -71,6 +71,9 @@ module.exports = function(opts) {
     peer.process = process;
     peer.leave = board.emit.bind(board, 'leave', peer);
 
+    // trigger the peer connect
+    board.emit('peer:connect', peer);
+
     return peer;
   }
 
@@ -148,6 +151,8 @@ module.exports = function(opts) {
 
       peer.room = undefined;
     }
+
+    board.emit('peer:disconnect', peer);
   });
 
   board.connect = connect;
