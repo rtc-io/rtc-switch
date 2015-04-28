@@ -81,6 +81,7 @@ module.exports = function(opts) {
       members: []
     });
 
+    board.emit('room:create', name);
     return rooms.get(name);
   }
 
@@ -107,18 +108,17 @@ module.exports = function(opts) {
 
   // handle announce messages
   board.on('announce', function(payload, peer, sender, data) {
-    var room;
+    var targetRoom = data && data.room;
+    var room = targetRoom && getOrCreateRoom(targetRoom);
 
     // if the peer is already in a room, then we need to remove them from
     // that room
-    if (peer.room) {
+    if (peer.room && peer.room.name !== targetRoom) {
       board.emit('leave', peer, sender, data);
     }
 
-    // create the new room
-    room = peer.room = data && data.room && getOrCreateRoom(data.room);
-
-    // tag the peer id
+    // tag the peer
+    peer.room = room;
     peer.id = data.id;
 
     // send through the announce
