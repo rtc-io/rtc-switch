@@ -129,7 +129,7 @@ module.exports = function(opts) {
       room.members.push(peer);
 
       // send the number of members back to the peer
-      peer.emit('data', '/roominfo|{"memberCount":' + room.length + '}');
+      peer.emit('data', '/roominfo|{"memberCount":' + room.members.length + '}');
     }
   });
 
