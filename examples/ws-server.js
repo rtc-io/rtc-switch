@@ -12,4 +12,6 @@ wss.on('connection', function connection(ws) {
       ws.send(data);
     }
   });
+
+  ws.on('close', peer.leave);
 });
