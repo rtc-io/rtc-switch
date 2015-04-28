@@ -67,12 +67,9 @@ module.exports = function(opts) {
       }
     }
 
-    function leave() {
-    }
-
     // add peer functions
     peer.process = process;
-    peer.leave = leave;
+    peer.leave = board.emit.bind(board, 'leave', peer);
 
     return peer;
   }
@@ -110,7 +107,16 @@ module.exports = function(opts) {
 
   // handle announce messages
   board.on('announce', function(payload, peer, sender, data) {
-    var room = peer.room = data && data.room && getOrCreateRoom(data.room);
+    var room;
+
+    // if the peer is already in a room, then we need to remove them from
+    // that room
+    if (peer.room) {
+      board.emit('leave', peer, sender, data);
+    }
+
+    // create the new room
+    room = peer.room = data && data.room && getOrCreateRoom(data.room);
 
     // tag the peer id
     peer.id = data.id;
@@ -127,7 +133,7 @@ module.exports = function(opts) {
     }
   });
 
-  board.on('leave', function(peer, sender, data) {
+  board.on('leave', function(peer) {
     if (peer.room) {
       // remove the peer from the room
       peer.room.members = peer.room.members.filter(function(member) {
@@ -137,6 +143,7 @@ module.exports = function(opts) {
       // if we have no more members in the room, then destroy the room
       if (peer.room.members.length === 0) {
         board.emit('room:destroy', peer.room.name);
+        rooms.delete(peer.room.name);
       }
 
       peer.room = undefined;
