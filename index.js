@@ -40,7 +40,7 @@ module.exports = function(opts) {
 
         // if we have a to command, and no designated target
         if (command === 'to') {
-          target = peer.room.filter(function(member) {
+          target = peer.room.members.filter(function(member) {
             return member.id === parts[0];
           })[0];
 
@@ -57,7 +57,7 @@ module.exports = function(opts) {
           board.emit.apply(board, [command, data, peer].concat(parts));
 
           if (peer.room) {
-            peer.room.filter(function(member) {
+            peer.room.members.filter(function(member) {
               return member !== peer;
             }).forEach(function(member) {
               member.emit('data', data);
@@ -78,7 +78,11 @@ module.exports = function(opts) {
   }
 
   function createRoom(name) {
-    rooms.set(name, []);
+    // create a simple room object
+    rooms.set(name, {
+      name: name,
+      members: []
+    });
 
     return rooms.get(name);
   }
@@ -113,10 +117,10 @@ module.exports = function(opts) {
 
     // send through the announce
     if (room) {
-      room.forEach(emit('data', payload));
+      room.members.forEach(emit('data', payload));
 
       // add the peer to the room
-      room.push(peer);
+      room.members.push(peer);
 
       // send the number of members back to the peer
       peer.emit('data', '/roominfo|{"memberCount":' + room.length + '}');
@@ -126,9 +130,14 @@ module.exports = function(opts) {
   board.on('leave', function(peer, sender, data) {
     if (peer.room) {
       // remove the peer from the room
-      peer.room = peer.room.filter(function(member) {
+      peer.room.members = peer.room.members.filter(function(member) {
         return member !== peer;
       });
+
+      // if we have no more members in the room, then destroy the room
+      if (peer.room.members.length === 0) {
+        board.emit('room:destroy', peer.room.name);
+      }
 
       peer.room = undefined;
     }
