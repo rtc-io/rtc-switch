@@ -28,6 +28,7 @@
     "ws": "^0.7.1"
   },
   "dependencies": {
-    "cog": "^1.0.0"
+    "cog": "^1.0.0",
+    "collections": "^1.2.2"
   }
 }

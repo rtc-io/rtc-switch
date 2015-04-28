@@ -1,5 +1,6 @@
 var jsonparse = require('cog/jsonparse');
 var EventEmitter = require('events').EventEmitter;
+var FastMap = require('collections/fast-map');
 
 /**
   # rtc-switch
@@ -19,8 +20,8 @@ var EventEmitter = require('events').EventEmitter;
 
 **/
 module.exports = function(opts) {
-  var rooms = {};
   var board = new EventEmitter();
+  var rooms = board.rooms = new FastMap();
 
   function connect() {
     var peer = new EventEmitter();
@@ -76,8 +77,14 @@ module.exports = function(opts) {
     return peer;
   }
 
+  function createRoom(name) {
+    rooms.set(name, []);
+
+    return rooms.get(name);
+  }
+
   function destroy() {
-    rooms = {};
+    rooms.clear();
   }
 
   function emit(name, src) {
@@ -94,7 +101,7 @@ module.exports = function(opts) {
   }
 
   function getOrCreateRoom(name) {
-    return rooms[name] || (rooms[name] = []);
+    return rooms.get(name) || createRoom(name);
   }
 
   // handle announce messages
