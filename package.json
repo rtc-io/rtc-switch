@@ -1,6 +1,6 @@
 {
   "name": "rtc-switch",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The core processing logic of rtc-switchboard without assuming any network transport",
   "main": "index.js",
   "stability": "unstable",
