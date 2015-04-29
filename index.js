@@ -127,7 +127,9 @@ module.exports = function(opts) {
     // send through the announce
     if (room) {
       // add the peer to the room
-      room.members = room.members.filter(not(peer)).concat([peer]);
+      room.members = room.members.filter(function(member) {
+        return member && peer && member.id && member.id !== peer.id;
+      }).concat([peer]);
 
       // send the number of members back to the peer
       peer.emit('data', '/roominfo|{"memberCount":' + room.members.length + '}');
