@@ -33,6 +33,9 @@ module.exports = function(opts) {
       var parts;
       var target;
 
+      // emit the data for the board to process
+      board.emit('data', data, peer && peer.id, peer);
+
       if (data.charAt(0) === '/') {
         // initialise the command name
         command = data.slice(1, data.indexOf('|', 1)).toLowerCase();
