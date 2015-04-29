@@ -23,6 +23,7 @@
   "homepage": "https://github.com/rtc-io/rtc-switch",
   "devDependencies": {
     "cuid": "^1.2.4",
+    "formatter": "^0.4.1",
     "socket.io": "^1.3.4",
     "tape": "^3.5.0",
     "ws": "^0.7.1"
