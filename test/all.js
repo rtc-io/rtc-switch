@@ -1,1 +1,2 @@
 require('./announce');
+require('./roominfo');
