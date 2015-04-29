@@ -113,7 +113,6 @@ module.exports = function(opts) {
   board.on('announce', function(payload, peer, sender, data) {
     var targetRoom = data && data.room;
     var room = targetRoom && getOrCreateRoom(targetRoom);
-    var notPeer = not(peer);
 
     // if the peer is already in a room, then we need to remove them from
     // that room
@@ -127,10 +126,8 @@ module.exports = function(opts) {
 
     // send through the announce
     if (room) {
-      room.members.filter(notPeer).forEach(emit('data', payload));
-
       // add the peer to the room
-      room.members = room.members.filter(notPeer).concat([peer]);
+      room.members = room.members.filter(not(peer)).concat([peer]);
 
       // send the number of members back to the peer
       peer.emit('data', '/roominfo|{"memberCount":' + room.members.length + '}');
@@ -140,9 +137,7 @@ module.exports = function(opts) {
   board.on('leave', function(peer) {
     if (peer.room) {
       // remove the peer from the room
-      peer.room.members = peer.room.members.filter(function(member) {
-        return member !== peer;
-      });
+      peer.room.members = peer.room.members.filter(not(peer));
 
       // if we have no more members in the room, then destroy the room
       if (peer.room.members.length === 0) {
