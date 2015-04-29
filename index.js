@@ -1,6 +1,7 @@
 var jsonparse = require('cog/jsonparse');
 var EventEmitter = require('events').EventEmitter;
 var FastMap = require('collections/fast-map');
+var not = require('whisk/not');
 
 /**
   # rtc-switch
@@ -25,6 +26,7 @@ module.exports = function(opts) {
 
   function connect() {
     var peer = new EventEmitter();
+    var notMe = not(peer);
 
     function process(data) {
       var command;
@@ -57,9 +59,7 @@ module.exports = function(opts) {
           board.emit.apply(board, [command, data, peer].concat(parts));
 
           if (peer.room) {
-            peer.room.members.filter(function(member) {
-              return member !== peer;
-            }).forEach(function(member) {
+            peer.room.members.filter(notMe).forEach(function(member) {
               member.emit('data', data);
             });
           }
@@ -113,6 +113,7 @@ module.exports = function(opts) {
   board.on('announce', function(payload, peer, sender, data) {
     var targetRoom = data && data.room;
     var room = targetRoom && getOrCreateRoom(targetRoom);
+    var notPeer = not(peer);
 
     // if the peer is already in a room, then we need to remove them from
     // that room
@@ -126,10 +127,10 @@ module.exports = function(opts) {
 
     // send through the announce
     if (room) {
-      room.members.forEach(emit('data', payload));
+      room.members.filter(notPeer).forEach(emit('data', payload));
 
       // add the peer to the room
-      room.members.push(peer);
+      room.members = room.members.filter(notPeer).concat([peer]);
 
       // send the number of members back to the peer
       peer.emit('data', '/roominfo|{"memberCount":' + room.members.length + '}');
