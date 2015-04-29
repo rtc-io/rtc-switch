@@ -3,6 +3,7 @@ var cuid = require('cuid');
 var board;
 var members = [];
 var announce = require('./helpers/announce');
+var ids = [];
 
 test('create a new switch', function(t) {
   t.plan(1);
@@ -21,7 +22,7 @@ test('connect member:1', function(t) {
 });
 
 test('0:announce', function(t) {
-  var testId = cuid();
+  var testId = ids[0] = cuid();
 
   t.plan(3);
   board.once('announce', function(peer, data) {
@@ -37,7 +38,7 @@ test('0:announce', function(t) {
 });
 
 test('1:announce', function(t) {
-  var testId = cuid();
+  var testId = ids[1] = cuid();
 
   t.plan(3);
   board.once('announce', function(peer, data) {
@@ -52,8 +53,6 @@ test('1:announce', function(t) {
 });
 
 test('0:announce (reannounce, should not increase membercont)', function(t) {
-  var testId = cuid();
-
   function handleData(data) {
     var parts = data.split('|');
 
@@ -66,9 +65,34 @@ test('0:announce (reannounce, should not increase membercont)', function(t) {
   t.plan(3);
   board.once('announce', function(peer, data) {
     t.ok(data);
-    t.equal(data.id, testId);
+    t.equal(data.id, ids[0]);
   });
 
   members[0].on('data', handleData);
-  members[0].process(announce({ id: testId, room: 'a' }));
+  members[0].process(announce({ id: ids[0], room: 'a' }));
+});
+
+test('create a new member:1 instance', function(t) {
+  t.plan(1);
+  t.ok(members[1] = board.connect(), 'member:1 connected');
+});
+
+test('1:announce (reannounce - separate instance, should not increase count', function(t) {
+  function handleData(data) {
+    var parts = data.split('|');
+
+    if (parts[0] === '/roominfo') {
+      t.equal(data, '/roominfo|{"memberCount":2}');
+      members[0].removeListener('data', handleData);
+    }
+  }
+
+  t.plan(3);
+  board.once('announce', function(peer, data) {
+    t.ok(data);
+    t.equal(data.id, ids[1]);
+  });
+
+  members[1].on('data', handleData);
+  members[1].process(announce({ id: ids[1], room: 'a' }));
 });
