@@ -149,6 +149,11 @@ module.exports = function(opts) {
       if (peer.room.members.length === 0) {
         board.emit('room:destroy', peer.room.name);
         rooms.delete(peer.room.name);
+      } else {
+        logger.debug('/leave from ' + peer.id + ' in non empty room');
+        peer.room.members.forEach(function(member) {
+          member.emit('data', '/leave|' + peer.id + '|{"id":' + peer.id + ',"room:"' + peer.room.name + '}');
+        });
       }
 
       peer.room = undefined;
