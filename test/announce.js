@@ -20,6 +20,12 @@ test('connect member:1', function(t) {
   t.ok(members[1] = board.connect(), 'member:1 connected');
 });
 
+test('0:cannot send messages when not announced', function(t) {
+  var message = '/to|' + members[1].id + '|/hello|foo';
+  t.plan(1);
+  t.notOk(members[0].process(message), 'could not process message');;
+});
+
 test('0:announce', function(t) {
   var testId = cuid();
 

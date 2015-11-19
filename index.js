@@ -45,7 +45,7 @@ module.exports = function(opts) {
 
         // if we have a to command, and no designated target
         if (command === 'to') {
-          target = peer.room.members.filter(function(member) {
+          target = peer.room && peer.room.members.filter(function(member) {
             return member.id === parts[0];
           })[0];
 
