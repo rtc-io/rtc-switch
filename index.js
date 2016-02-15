@@ -23,6 +23,7 @@ var not = require('whisk/not');
 module.exports = function(opts) {
   var board = new EventEmitter();
   var rooms = board.rooms = new FastMap();
+  var logger = (opts || {}).logger || console;
 
   function connect() {
     var peer = new EventEmitter();
@@ -51,7 +52,7 @@ module.exports = function(opts) {
 
           // if the target is unknown, refuse to send
           if (! target) {
-            console.warn('got a to request for id "' + parts[0] + '" but cannot find target');
+            logger.warn('got a to request for id "' + parts[0] + '" but cannot find target');
             return false;
           }
 
