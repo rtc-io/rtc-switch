@@ -23,7 +23,7 @@ var not = require('whisk/not');
 module.exports = function(opts) {
   var board = new EventEmitter();
   var rooms = board.rooms = new FastMap();
-  var logger = opts.logger || console;
+  var logger = (opts || {}).logger || console;
 
   function connect() {
     var peer = new EventEmitter();
