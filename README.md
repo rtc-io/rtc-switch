@@ -24,7 +24,7 @@ wss.on('connection', function connection(ws) {
   peer.on('data', function(data) {
     if (ws.readyState === 1) {
       console.log('OUT <== ' + data);
-      ws.emit("rtc-signal",data)
+      ws.emit("rtc-signal",data);
     }
   });
 
@@ -46,7 +46,7 @@ io.on('connection', function(socket){
 
   socket.on('message', peer.process);
   peer.on('data', function(data) {
-    socket.emit("rtc-signal",data)
+    socket.emit("rtc-signal",data);
   });
 });
 
