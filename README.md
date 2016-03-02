@@ -6,7 +6,7 @@ talking with an rtc-signaller up to and including version 5.
 
 [![NPM](https://nodei.co/npm/rtc-switch.png)](https://nodei.co/npm/rtc-switch/)
 
-[![unstable](https://img.shields.io/badge/stability-unstable-yellowgreen.svg)](https://github.com/dominictarr/stability#unstable) [![Build Status](https://api.travis-ci.org/rtc-io/rtc-switch.svg?branch=master)](https://travis-ci.org/rtc-io/rtc-switch) [![bitHound Score](https://www.bithound.io/github/rtc-io/rtc-switch/badges/score.svg)](https://www.bithound.io/github/rtc-io/rtc-switch) 
+[![unstable](https://img.shields.io/badge/stability-unstable-yellowgreen.svg)](https://github.com/dominictarr/stability#unstable) [![Build Status](https://api.travis-ci.org/rtc-io/rtc-switch.svg?branch=master)](https://travis-ci.org/rtc-io/rtc-switch) [![bitHound Score](https://www.bithound.io/github/rtc-io/rtc-switch/badges/score.svg)](https://www.bithound.io/github/rtc-io/rtc-switch)
 
 ## Example Usage
 
@@ -24,7 +24,7 @@ wss.on('connection', function connection(ws) {
   peer.on('data', function(data) {
     if (ws.readyState === 1) {
       console.log('OUT <== ' + data);
-      ws.send(data);
+      ws.emit("rtc-signal",data)
     }
   });
 
@@ -46,7 +46,7 @@ io.on('connection', function(socket){
 
   socket.on('message', peer.process);
   peer.on('data', function(data) {
-    socket.send(data);
+    socket.emit("rtc-signal",data)
   });
 });
 
